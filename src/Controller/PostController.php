@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Post;
+use App\Form\CommentType;
 use App\Form\PostType;
 use App\Repository\PostRepository;
 use App\Repository\UserRepository;
@@ -54,6 +56,39 @@ class PostController extends AbstractController
 
         return $this->render('post/new.html.twig', [
             'post' => $post,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/add_comment", name="post_add_comment", methods={"GET","POST"})
+     */
+    public function addComment(Post $post, Request $request, UserRepository $userRepository): Response
+    {
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $currentUser = $userRepository->findOneBy(['username' => $request->cookies->get('username')]);
+
+            if ($currentUser === null || $currentUser->getPassword() !== $request->cookies->get('password')) {
+                return new Response('unauthorized', 401);
+            }
+
+            $comment->setUser($currentUser);
+            $comment->setPost($post);
+
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('comment/new.html.twig', [
+            'comment' => $comment,
             'form' => $form->createView(),
         ]);
     }

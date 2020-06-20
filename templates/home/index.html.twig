@@ -9,21 +9,34 @@
         {% endfor %}
     </div>
 
-    {% for post in posts %}
-        <h1>{{ post.title }}</h1>
-        <div>
-            {{ post.text }}
-        </div>
-        <div>
-            {% for comment in post.comments %}
-                <div>
-                    <h5><a href="{{ url('user_show', {id: comment.user.id}) }}">{{ comment.user.fullname }}</a> ({{ comment.createdAt|date('d.m.Y') }})</h5>
-                    <div style="font-style: italic">
-                        {{ comment.text }}
-                    </div>
+    <div style="width: 100%;">
+        {% for post in posts %}
+            <div style="width: 300px; margin: 0 auto;">
+                <h1>{{ post.title }}</h1>
+                <div style="margin-bottom: 50px">
+                    {{ post.text }}
                 </div>
+                <div>
+                    <table border="1" width="500" style="margin: 0 auto;">
+                        {% for comment in post.comments %}
+                            <tr>
+                                <td>
+                                    <div>
+                                        <h5>
+                                            <a href="{{ url('user_show', {id: comment.user.id}) }}">{{ comment.user.fullname }}</a>
+                                            ({{ comment.createdAt|date('d.m.Y') }})</h5>
+                                        <div style="font-style: italic">
+                                            {{ comment.text }}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
 
-            {% endfor %}
-        </div>
-    {% endfor %}
+                        {% endfor %}
+                    </table>
+                    <a href="{{ path('post_add_comment', {id: post.id}) }}">add_comment</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
