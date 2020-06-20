@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CalculatorController!{% endblock %}
+
+{% block body %}
+    <form method="POST" action="{{ url('calculator_process') }}">
+        <input name="a" type="number"/>
+        <input name="b" type="number"/>
+        <button>Calculate</button>
+    </form>
+
+    <div>
+        {% if sum is defined %}
+            Sum = {{ sum }}
+        {% endif %}
+    </div>
+{% endblock %}

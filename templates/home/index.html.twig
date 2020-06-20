@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+    <div>
+        {% for user in users %}
+            <a href="{{ url('user_show', {id: user.id}) }}">{{ user.username }}</a>
+        {% endfor %}
+    </div>
+
+    {% for post in posts %}
+        <h1>{{ post.title }}</h1>
+        <div>
+            {{ post.text }}
+        </div>
+        <div>
+            {% for comment in post.comments %}
+                <div>
+                    <h5><a href="{{ url('user_show', {id: comment.user.id}) }}">{{ comment.user.fullname }}</a> ({{ comment.createdAt|date('d.m.Y') }})</h5>
+                    <div style="font-style: italic">
+                        {{ comment.text }}
+                    </div>
+                </div>
+
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endblock %}
